@@ -1,1 +1,1 @@
-web: gunicorn runp-heroku:main
+web: gunicorn yatube:app
