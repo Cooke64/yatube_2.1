@@ -28,3 +28,5 @@ csrf = CSRFProtect(app)
 # flask db migrate -m "initial commit"
 # flask db
 
+if __name__ == '__main__':
+    app.run()
