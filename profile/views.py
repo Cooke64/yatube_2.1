@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 
 from app import app, db
 from forms import ProfileForm, ChangeDataForm
-from models import User, Post
+from app import User, Post
 from utils.utils import save_pic
 
 

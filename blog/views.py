@@ -5,7 +5,7 @@ from flask_mail import Message
 from app import app, db, mail
 from forms import PostCreateForm, AddCommentForm, EditCommentForm, \
     ContactUsForm
-from models import Post, Comment, Like, User
+from app import Post, Comment, Like, User
 
 
 @app.route('/')
@@ -13,7 +13,7 @@ def index():
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(
         Post.created_at.desc()).paginate(page=page, per_page=3)
-    last_post = Post.query.all()[-1]
+    last_post = Post.query.first()
     users = User.query.all()
     return render_template(
         'blog/index.html',

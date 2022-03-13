@@ -2,7 +2,7 @@ from flask import flash, url_for, redirect
 from flask_login import login_required, current_user
 
 from app import app, db
-from models import User
+from app import User
 
 
 @app.route('/follow/<username>')

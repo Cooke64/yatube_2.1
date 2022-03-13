@@ -6,7 +6,7 @@ from flask_mail import Message
 
 from app import app, bcrypt, db, mail
 from forms import RegistrationForm, LoginForm, RequestResetForm, ResetPassForm
-from models import User
+from app import User
 
 
 @app.before_request

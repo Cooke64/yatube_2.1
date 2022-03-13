@@ -5,7 +5,7 @@ from wtforms import StringField, PasswordField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, \
     ValidationError, InputRequired
 
-from models import User
+from app import User
 
 
 class RegistrationForm(FlaskForm):
