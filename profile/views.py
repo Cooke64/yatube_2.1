@@ -1,9 +1,8 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
 
-from app import app, db
+from app import app, db, User, Post
 from forms import ProfileForm, ChangeDataForm
-from app import User, Post
 from utils.utils import save_pic
 
 

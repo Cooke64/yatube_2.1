@@ -4,9 +4,8 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
 
-from app import app, bcrypt, db, mail
+from app import app, bcrypt, db, mail, User
 from forms import RegistrationForm, LoginForm, RequestResetForm, ResetPassForm
-from app import User
 
 
 @app.before_request

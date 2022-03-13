@@ -2,10 +2,9 @@ from flask import render_template, flash, url_for, redirect, abort, request
 from flask_login import login_required, current_user
 from flask_mail import Message
 
-from app import app, db, mail
+from app import app, db, mail, Post, Comment, Like, User
 from forms import PostCreateForm, AddCommentForm, EditCommentForm, \
     ContactUsForm
-from app import Post, Comment, Like, User
 
 
 @app.route('/')

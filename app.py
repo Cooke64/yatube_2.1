@@ -5,6 +5,10 @@ from flask_bcrypt import Bcrypt
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
 from flask_mail import Mail
+from datetime import datetime
+from flask_login import UserMixin
+import itsdangerous
+
 
 from config import Config
 
@@ -28,11 +32,6 @@ csrf = CSRFProtect(app)
 # flask db migrate -m "initial commit"
 # flask db
 
-from datetime import datetime
-
-from flask_login import UserMixin
-
-import itsdangerous
 
 
 @login_manager.user_loader
@@ -146,5 +145,5 @@ class Like(db.Model):
         'post.id', ondelete="CASCADE"), nullable=False)
 
 
-
-
+if __name__ == '__main__':
+    app.run()
