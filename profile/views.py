@@ -21,7 +21,7 @@ def profile_edit():
             current_user.email = form.email.data
             db.session.commit()
             flash('Профиль успешно изменен.', 'success')
-            return redirect(url_for('profile', username=current_user.username))
+            return redirect(url_for('user_profile', username=current_user.username))
     else:
         form.username.data = current_user.username
         form.email.data = current_user.email
