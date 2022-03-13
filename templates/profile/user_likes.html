@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+   {% block title %}
+      Все лайки: {{ user.username }}
+{% endblock %}
+{% block content %}
+<div class="container mt-5" >
+  <h1 class="mb-4">Все лайки: {{ user.username }} </h1>
+ {% for item in user.likes %}
+ <article class="media content-section">
+   <div style="float: left;">
+     <a href="{{ url_for('user_profile', username=item.post.author.username) }}">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + item.post.author.image_file) }}">
+     </a>
+   </div>
+               <div style="float: center;">
+               <h2 class="blog-post-title">{{ item.post.title }}</h2>
+                <p class="blog-post-meta">{{ item.post.created_at.strftime('%d-%m-%Y') }}</p>
+            </div>
+   <br>
+            <div style="float: center;">
+                <p>{{ item.post.text|truncate(50) }}</p>
+                <hr>
+                <a class='btn btn-outline-info mb-4' href="{{ url_for('post_detail', post_id=item.post.id) }}">Читать далее </a>
+          </div>
+
+ </article>
+{% endfor %}
+<!--Pagination-->
+</div>
+{% endblock %}

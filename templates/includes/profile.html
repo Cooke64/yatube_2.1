@@ -1,0 +1,12 @@
+  <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+    <div class="col-md-6 px-0">
+      <h1 class="display-4 fst-italic">{{ last_post.title}}</h1>
+      <p class="lead my-3">{{ last_post.text|truncate(50) }}</p>
+      <p class="lead mb-0"><a href="{{ url_for('post_detail', post_id=last_post.id) }}" class="text-white fw-bold">Continue reading...</a></p>
+    </div>
+  </div>
+<div class="row mb-2">
+  <h3 class="pb-4 mb-4 fst-italic border-bottom" style="text-align:center;">
+        Все записи
+      </h3>
+  </div>

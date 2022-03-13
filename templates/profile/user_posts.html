@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+   {% block title %}
+      Все записи пользователя: {{ user.username }}
+{% endblock %}
+{% block content %}
+<div class="container mt-5" >
+  <h1 class="mb-4">Все записи пользователя: {{ user.username }} </h1>
+ {% for post in posts.items %}
+ <article class="media content-section">
+   <div style="float: left;">
+     <a href="{{ url_for('user_profile', username=post.author.username) }}">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+     </a>
+   </div>
+            <div style="float: center;">
+               <h2 class="blog-post-title">{{ post.title|truncate(20) }}</h2>
+                <p class="blog-post-meta">{{ post.created_at.strftime('%d-%m-%Y') }}</p>
+            </div>
+   <br>
+            <div style="float: center;">
+                <p>{{ post.text|truncate(50) }}</p>
+                <hr>
+                <a class='btn btn-outline-info mb-4' href="{{ url_for('post_detail', post_id=post.id) }}">Читать далее </a>
+          </div>
+
+ </article>
+{% endfor %}
+<!--Pagination-->
+{% include 'includes/user_paginator.html' %}
+</div>
+{% endblock %}

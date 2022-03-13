@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+   {% block title %}
+    Войти
+{% endblock %}
+
+{% block content %}
+<div class="col-md-6 offset-md-3">
+<form method="POST">
+  <h1 class="offset-md-4">Войти</h1>
+  {% for item in form %}
+  {{ form.hidden_tag() }}
+
+  {% if item.widget.input_type != 'hidden' %} {{ item.label(class='form-label') }} {% endif %}
+
+  {% if item.errors %} {{ item(class='form-control is-invalid') }}
+
+  {% for error in item.errors %} {{ error }} {% endfor %}
+  {% else %}
+    {{ item(class='form-control') }}
+  {% endif %}
+  <br>
+  {% endfor %}
+    <p>
+    Забыл пароль?
+    <a href="{{ url_for('reset_password_request') }}">Жми</a>
+</p>
+<button type="submit" class="btn btn-outline-secondary">Войти</button>
+</form>
+
+</div>
+  {% endblock %}

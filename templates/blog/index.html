@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+   {% block title %}
+Главная
+{% endblock %}
+{% block profile %}
+{% include 'includes/profile.html' %}
+{% endblock %}
+{% block content %}
+{% for post in posts.items %}
+ <article class="media content-section">
+   <a href="{{ url_for('post_detail', post_id=post.id) }}">
+   <div style="float: left;">
+     <a href="{{ url_for('user_profile', username=post.author.username) }}">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+       </a>
+   </div>
+            <div style="float: center;">
+               <h2 class="blog-post-title">{{ post.title }}</h2>
+              <p class="blog-post-meta">{{ post.created_at.strftime('%d-%m-%Y') }} </p>
+               <p class="blog-post-meta">Опубликовано пользователем: <a href="{{ url_for('user_posts', username=post.author.username ) }}"> {{ post.author.username }} </a></p>
+            </div>
+   <br>
+            <div style="float: center;">
+                <p>{{ post.text|truncate(300) }}</p>
+                <hr>
+                <a class='btn btn-outline-info mb-4' href="{{ url_for('post_detail', post_id=post.id) }}">Читать далее </a>
+          </div>
+</a>
+ </article>
+
+{% endfor %}
+<!--Pagination-->
+{% include 'includes/paginator.html' %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+   {% block title %}
+Регистрация
+{% endblock %}
+
+{% block content %}
+<form method="POST" action="">
+  <h1>Зарегистрироваться</h1>
+  {% for item in form %}
+  {{ form.hidden_tag() }}
+
+  {% if item.widget.input_type != 'hidden' %} {{ item.label(class='form-label') }} {% endif %}
+
+  {% if item.errors %}
+  {% for error in item.errors %} {{ error }} {% endfor %}
+  {{ item(class='form-control is-invalid') }}
+  {% else %}
+    {{ item(class='form-control') }}
+  {% endif %}
+  <br>
+  {% endfor %}
+  <button type="submit" class="btn btn-outline-secondary">Зарегистрироваться </button>
+  <a href="{{url_for('login') }}" class='btn btn-outline-secondary'>Войти</a>
+</form>
+  {% endblock %}

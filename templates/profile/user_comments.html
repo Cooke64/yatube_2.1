@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+   {% block title %}
+      Все комментарии пользователя: {{ user.username }}
+{% endblock %}
+{% block content %}
+<div class="container mt-5" >
+  <h1 class="mb-4">Все комментарии: {{ user.username }} </h1>
+
+ {% for comment in user.comments %}
+ <article class="media content-section">
+   <div style="float: left;">
+     <a href="{{ url_for('user_profile', username=user.username) }}">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}">
+     </a>
+   </div>
+      <div style="float: center;">
+        <h2 class="blog-post-title">Комментарий к посту:
+        <a href="{{ url_for('post_detail', post_id=comment.post_id) }}">
+          {{ comment.posts.title }}
+        </a>
+        </h2>
+        <p class="blog-post-meta">{{ comment.timestamp.strftime('%d-%m-%Y') }}</p>
+      </div>
+                <br>
+            <div style="float: center;">
+                <p>{{ comment.body }}</p>
+                <hr>
+          </div>
+
+ </article>
+{% endfor %}
+<!--Pagination-->
+</div>
+{% endblock %}

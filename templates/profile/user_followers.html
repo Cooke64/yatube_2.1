@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+   {% block title %}
+      Все подписки {{ user.username }}
+{% endblock %}
+{% block content %}
+<div class="container mt-5" >
+  <h1 class="mb-4">Все подписки: {{ user.username }} </h1>
+ {% for person in user.followed %}
+ <article class="media content-section">
+   <div style="float: left;">
+     <a href="{{ url_for('user_profile', username=person.username) }}">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + person.image_file) }}">
+     </a>
+   </div>
+      <div style="float: center;">
+        <h2 class="blog-post-title">
+        <a href="{{ url_for('user_profile', username=person.username) }}">
+          {{ person.username }}
+        </a>
+        </h2>
+      </div>
+   <h6 class="theme-color lead"> Последняя активность:
+     {% if user.last_seen%}
+     {{ user.last_seen.strftime('%d-%m-%Y')}}
+     {% else %}
+     пользователя давно не было
+     {% endif %}
+   </h6>
+ </article>
+{% endfor %}
+<!--Pagination-->
+</div>
+{% endblock %}
