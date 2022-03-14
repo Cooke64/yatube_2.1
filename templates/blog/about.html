@@ -4,9 +4,51 @@
 {% endblock %}
 
 {% block content %}
- <article class="media content-section">
-            <div>
-                <p> Вторая версия знаменитой социальной сети Yatube, выполненная с использованием фреймворка Flask</p>
-          </div><br>
- </article>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="card card-body h-100  border-info" id="profile-wrapper">
+					<img  src="{{ url_for('static', filename='profile_pics/default.jpg') }}" >
+					<hr class="border-info">
+					<h4>Привет, я Костя!</h4>
+					<p>И я веб разработчик.</p>
+				</div>
+			</div>
+
+			<div class="col-md-9">
+				<div class="card card-body h-100  border-info">
+					<h4>Мои шаги на пути к первому оферу.</h4>
+					<hr>
+					<p>Полгода назад я решил вновь начать изучение языков программирования спустя почти 10 лет. Последний раз я был увлечен разработкой еще в средней школе. Торренты, сервера для CS, маленькие сайты для серверов и тд.</p>
+
+					<p>Сейчас учусь по программе Python developer на курсах Яндекс Практикум и активно занимаюсь самообразованием и дополниетльным изучением.</p>
+
+					<p>Результатом тяжелой и плодотворной работы является этот блог, созданный на фреймворке Flask.</p>
+
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="card card-body h-100 border-info">
+					<h5>Мой опыт работы.</h5>
+					<hr>
+					<p>Пока его нет.</p>
+					<p> Все проекты являются учебными за исключением данного блога, развернутого на облачном сервисе Heroku и бота в Telegram для поиска работы по указанному запросу.</p>
+					</div>
+			</div>
+
+			<div class="col-md-6">
+				<div class="card card-body h-100 border-info">
+					<h5>Стек технологий.</h5>
+					<hr>
+					<p>Python, Django, Flask, Django DRF, HTML/CSS, Pyrogram, Selenium, BeautifulSoup.</p>
+					<p>В данным момент планы по изучению Flask API, Docker</p>
+				</div>
+			</div>
+		</div>
+		<br>
+		</div>
   {% endblock %}
