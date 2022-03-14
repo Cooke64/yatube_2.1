@@ -15,7 +15,7 @@ class RegistrationForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
     password = PasswordField('Пароль', validators=[DataRequired(),
-                                                     Length(min=2, max=20)])
+                                                   Length(min=2, max=20)])
     confirm_password = PasswordField('Подтвердите пароль',
                                      validators=[DataRequired(),
                                                  EqualTo('password')])
@@ -33,18 +33,17 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     """Форма для входа на сайт зарегистрированным пользователям."""
-    email = StringField('Email',
-                        validators=[DataRequired(), Email()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember = BooleanField('Запомнить')
 
 
 class ProfileForm(FlaskForm):
     """Форма для изменения данных профиля."""
-    username = StringField('Имя пользователя',
-                           validators=[Length(min=3, max=20)])
-    email = StringField('Email',
-                        validators=[Email()])
+    username = StringField(
+        'Имя пользователя', validators=[Length(min=3, max=20)]
+    )
+    email = StringField('Email',  validators=[Email()])
     picture = FileField(
         'Сменить фотографию профиля',
         validators=[FileAllowed(['jpg', 'png', 'jpeg'])]
@@ -65,34 +64,35 @@ class ProfileForm(FlaskForm):
 
 class PostCreateForm(FlaskForm):
     """Форма для создания нового поста."""
-    title = StringField('Заголовок',
-                        validators=[DataRequired()])
-    text = TextAreaField('Содержание поста',
-                         validators=[DataRequired()])
+    title = StringField(
+        'Заголовок', validators=[DataRequired()]
+    )
+    text = TextAreaField(
+        'Содержание поста',  validators=[DataRequired()]
+    )
 
 
 class AddCommentForm(FlaskForm):
+    """Форма для добавления комментария."""
     body = TextAreaField("Текст комментария", validators=[InputRequired()])
 
 
 class EditCommentForm(FlaskForm):
+    """Форма для изменения комментария."""
     body = TextAreaField("Текст комментария", validators=[InputRequired()])
-
-
-class TegForm(FlaskForm):
-    name = StringField("Добавить тег", validators=[InputRequired()])
 
 
 class ChangeDataForm(FlaskForm):
     """Форма для изменения персональных данных."""
-    age = StringField('Возраст',)
-    country = StringField('Страна',)
-    city = StringField('Город',)
-    telegram = StringField('Телеграм',)
-    git = StringField('Мой github',)
+    age = StringField('Возраст', )
+    country = StringField('Страна', )
+    city = StringField('Город', )
+    telegram = StringField('Телеграм', )
+    git = StringField('Мой github', )
 
 
 class RequestResetForm(FlaskForm):
+    """Форма для заполнения email при смене пароля."""
     email = StringField('Email',
                         validators=[DataRequired()])
 
@@ -103,14 +103,17 @@ class RequestResetForm(FlaskForm):
 
 
 class ResetPassForm(FlaskForm):
-    password = PasswordField('Новый пароль', validators=[DataRequired(),
-                                                     Length(min=2,
-                                                            max=20)])
-    confirm_password = PasswordField('Подтвердить пароль',
-                                 validators=[DataRequired(),
-                                             EqualTo('password')])
+    """Форма для изменения пароля на новый.."""
+    password = PasswordField(
+        'Новый пароль', validators=[DataRequired(), Length(min=2, max=20)]
+    )
+    confirm_password = PasswordField(
+        'Подтвердить пароль', validators=[DataRequired(), EqualTo('password')]
+    )
 
 
 class ContactUsForm(FlaskForm):
-    message = TextAreaField('Оставьте ваш отзыв',
-                        validators=[DataRequired()])
+    """Форма обратной связи."""
+    message = TextAreaField(
+        'Оставьте ваш отзыв', validators=[DataRequired()]
+    )

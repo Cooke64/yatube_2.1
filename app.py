@@ -14,7 +14,7 @@ from config import Config
 
 app = Flask(__name__)
 app._static_folder = 'static'
-app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
+app.config['SECRET_KEY'] = '5791628bb0b13ce0c676df2de280ba245'
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 
@@ -27,11 +27,6 @@ mail = Mail(app)
 
 migrate = Migrate(app, db)
 csrf = CSRFProtect(app)
-
-# flask db init
-# flask db migrate -m "initial commit"
-# flask db
-
 
 
 @login_manager.user_loader
@@ -143,7 +138,3 @@ class Like(db.Model):
         'user.id', ondelete="CASCADE"), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey(
         'post.id', ondelete="CASCADE"), nullable=False)
-
-
-if __name__ == '__main__':
-    app.run()

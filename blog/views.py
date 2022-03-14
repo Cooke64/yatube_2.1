@@ -28,7 +28,8 @@ def search():
     q = request.args.get('q')
     if q:
         posts = Post.query.filter(
-            Post.title.contains(q) | Post.text.contains(q)).paginate(page=page, per_page=3)
+            Post.title.contains(q) | Post.text.contains(q)).paginate(
+            page=page, per_page=3)
         return render_template(
             'blog/search_result.html',
             posts=posts,

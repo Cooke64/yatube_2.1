@@ -1,68 +1,38 @@
 {% extends 'base.html' %}
-   {% block title %}
-      Результаты поиска по запросу {{ q }}
+{% block title %}
+  Результаты поиска по запросу {{ q }}
 {% endblock %}
 {% block content %}
-<div class="container mt-5" >
-<style>
-.content-section {
-  background: #ffffff;
-  padding: 10px 20px;
-  border: 1px solid #dddddd;
-  border-radius: 3px;
-  margin-bottom: 20px;
-}
-
-
-.article-img {
-  height: 65px;
-  width: 65px;
-  margin-right: 16px;
-}
-
-.article-metadata {
-  padding-bottom: 1px;
-  margin-bottom: 4px;
-  border-bottom: 1px solid #e3e3e3
-}
-
-.article-metadata a {
-  text-decoration: none;
-}
-.article-metadata a:hover {
-  color: #333;
-  text-decoration: none;
-}
-</style>
-
-  {% if posts %}
-  {% for post in posts.items %}
-<h1>Результаты поиска по запросу {{ q }}</h1>
- <article class="media content-section">
-   <div style="float: left;">
-        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
-   </div>
-            <div style="float: center;">
-               <h2 class="blog-post-title">{{ post.title|truncate(20) }}</h2>
-                <p class="blog-post-meta">{{ post.created_at.strftime('%d-%m-%Y') }} by <a href="{{ url_for('user_posts', username=post.author.username ) }}"> {{ post.author.username }} </a></p>
-            </div>
-   <br>
-            <div style="float: center;">
-                <p>{{ post.text|truncate(50) }}</p>
-                <hr>
-                <a class='btn btn-outline-info mb-4' href="{{ url_for('post_detail', post_id=post.id) }}">Читать далее </a>
-          </div>
-
- </article>
-    {% else%}
-      <article class="blog-post">
-        <div class="alert alert-info">
-                  <h2 class="blog-post-title">Увы, {{ q }} не существует</h2>
+  <div class="container mt-5">
+    {% if posts %}
+      {% for post in posts.items %}
+        <h1>Результаты поиска по запросу {{ q }}</h1>
+        <article class="media content-section">
+        <div style="float: left;">
+          <img class="rounded-circle article-img"
+           src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
         </div>
-      </article>
-  {% endfor %}
-  {% endif %}
-<!--Pagination-->
+        <div style="float: center;">
+          <h2 class="blog-post-title">{{ post.title|truncate(20) }}</h2>
+          <p class="blog-post-meta">{{ post.created_at.strftime('%d-%m-%Y') }} by
+          <a href="{{ url_for('user_posts', username=post.author.username ) }}">
+          {{ post.author.username }} </a></p>
+         </div><br>
+        <div style="float: center;">
+          <p>{{ post.text|truncate(50) }}</p><hr>
+          <a class='btn btn-outline-info mb-4'
+          href="{{ url_for('post_detail', post_id=post.id) }}">Читать далее </a>
+        </div>
+        </article>
+      {% else%}
+        <article class="blog-post">
+          <div class="alert alert-info">
+            <h2 class="blog-post-title">Увы, {{ q }} не существует</h2>
+          </div>
+        </article>
+      {% endfor %}
+    {% endif %}
+  <!--Pagination-->
   {% include 'includes/paginator.html' %}
-</div>
+  </div>
 {% endblock %}

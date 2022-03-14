@@ -10,7 +10,7 @@ from utils.utils import save_pic
 @login_required
 def profile_edit():
     user = User.query.filter_by(username=current_user.username).first_or_404()
-    posts = Post.query.filter_by(author=user).count()
+    follow = user.followed.count()
     form = ProfileForm()
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -33,9 +33,9 @@ def profile_edit():
     return render_template(
         'profile/profile.html',
         image_file=image_file,
+        follow=follow,
         form=form,
         is_edit=is_edit,
-        posts=posts,
         user=user,
     )
 
