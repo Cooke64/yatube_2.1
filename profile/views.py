@@ -124,6 +124,7 @@ def user_likes(username):
 
 
 @app.route('/profile/<string:username>/send_message')
+@login_required
 def send_message(username):
     form = SendMessageForm()
     if form.validate_on_submit():
@@ -140,11 +141,14 @@ def send_message(username):
 
 
 @app.route('/profile/all_messages')
+@login_required
 def all_messages():
     user = current_user
-    messages = Message.query.filter_by(getter=user).all()
+    messages_sent = Message.query.filter_by(getter=user).all()
+    messages_got = Message.query.filter_by(sender=user).all()
     return render_template(
         'profile/all_messages.html',
         user=user,
-        messages=messages,
+        messages_sent=messages_sent,
+        messages_got=messages_got,
     )

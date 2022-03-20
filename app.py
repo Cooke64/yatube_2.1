@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
@@ -72,7 +72,7 @@ class User(db.Model, UserMixin):
     messages = db.relationship('Message', backref='user', lazy=True)
 
     def __repr__(self):
-        return f'{self.username} has {self.email}'
+        return self.username
 
     def follow(self, user):
         if not self.is_following(user):
@@ -150,3 +150,9 @@ class Message(db.Model):
         'user.id', ondelete="CASCADE"), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False,
                           default=datetime.utcnow)
+    received = db.Column(db.Boolean, default=False, nullable=False)
+
+    def has_received(self):
+        if request.path == url_for('all_messages'):
+            self.received = True
+            return self.received

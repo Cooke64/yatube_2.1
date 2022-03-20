@@ -124,3 +124,4 @@ class SendMessageForm(FlaskForm):
     body = TextAreaField(
         'Отправьте ваше сообщение', validators=[Length(max=199)]
     )
+
