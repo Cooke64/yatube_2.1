@@ -69,6 +69,7 @@ class User(db.Model, UserMixin):
         backref='Подписчики',
         lazy='dynamic')
     likes = db.relationship('Like', backref='user', lazy=True)
+    messages = db.relationship('Message', backref='user', lazy=True)
 
     def __repr__(self):
         return f'{self.username} has {self.email}'
@@ -129,7 +130,7 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return self.body
+        return self.body[:20]
 
 
 class Like(db.Model):
@@ -138,3 +139,14 @@ class Like(db.Model):
         'user.id', ondelete="CASCADE"), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey(
         'post.id', ondelete="CASCADE"), nullable=False)
+
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(199), nullable=False)
+    sender = db.Column(db.Integer, db.ForeignKey(
+        'user.id', ondelete="CASCADE"), nullable=False)
+    getter = db.Column(db.Integer, db.ForeignKey(
+        'user.id', ondelete="CASCADE"), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False,
+                          default=datetime.utcnow)

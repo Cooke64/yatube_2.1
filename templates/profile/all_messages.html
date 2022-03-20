@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+   {% block title %}
+      Сообщения
+{% endblock %}
+{% block content %}
+<div class="container mt-5" >
+  <h1 class="mb-4">Все Сообщения: </h1>
+ {% for message in messages %}
+ <article class="media content-section">
+   Сообщение от:
+    {{ messages.sender }}
+   Отправлено:
+    {{ messages.timestamp }}
+   Текст
+    {{ messages.body }}
+ </article>
+{% endfor %}
+</div>
+{% endblock %}

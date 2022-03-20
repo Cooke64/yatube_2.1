@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
 
-from app import app, db, User, Post
-from forms import ProfileForm, ChangeDataForm
+from app import app, db, User, Post, Message
+from forms import ProfileForm, ChangeDataForm, SendMessageForm
 from utils.utils import save_pic
 
 
@@ -120,4 +120,31 @@ def user_likes(username):
     return render_template(
         'profile/user_likes.html',
         user=user,
+    )
+
+
+@app.route('/profile/<string:username>/send_message')
+def send_message(username):
+    form = SendMessageForm()
+    if form.validate_on_submit():
+        message = Message(
+            body=form.body.data,
+            sender=current_user.username,
+            getter=username,
+        )
+        db.session.add(message)
+        db.session.commit()
+        flash('Ваше сообщение отправлено', 'success')
+        return redirect(url_for(f'/profile/{username}'))
+    return render_template('profile/send_message.html', form=form)
+
+
+@app.route('/profile/all_messages')
+def all_messages():
+    user = current_user
+    messages = Message.query.filter_by(getter=user).all()
+    return render_template(
+        'profile/all_messages.html',
+        user=user,
+        messages=messages,
     )

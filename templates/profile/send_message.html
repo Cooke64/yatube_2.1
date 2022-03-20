@@ -1,0 +1,16 @@
+ {% extends 'base.html' %}
+   {% block title %}
+    Отправить сообщение
+{% endblock %}
+
+{% block content %}
+
+<form method="POST">
+  {% for item in form %}
+  {{ form.hidden_tag() }}
+  {% endfor %}
+  <button type="submit" class="btn btn-outline-secondary">
+    Отправить
+</button>
+</form>
+{% endblock %}

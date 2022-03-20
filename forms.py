@@ -117,3 +117,10 @@ class ContactUsForm(FlaskForm):
     message = TextAreaField(
         'Оставьте ваш отзыв', validators=[DataRequired()]
     )
+
+
+class SendMessageForm(FlaskForm):
+    """Форма отправки сообщений"""
+    body = TextAreaField(
+        'Отправьте ваше сообщение', validators=[Length(max=199)]
+    )
