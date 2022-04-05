@@ -43,6 +43,9 @@ followers = db.Table('followers',
 
 
 class User(db.Model, UserMixin):
+    """Модель пользователя. Представлены обязательные
+    для заполнения поля и поля для отображения в профиле.
+    """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), unique=True, nullable=False)
     email = db.Column(db.String(), unique=True, nullable=False)
@@ -50,6 +53,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(59), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     comments = db.relationship('Comment', backref='author', lazy=True)
+    # Отображение последнего посещения.
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     # Персональные данные, необязательные, для профиля
     age = db.Column(db.Integer,
@@ -75,23 +79,30 @@ class User(db.Model, UserMixin):
         return self.username
 
     def follow(self, user):
+        """Добавления в избранные авторы."""
         if not self.is_following(user):
             self.followed.append(user)
 
     def unfollow(self, user):
+        """Удаление из избранных авторов."""
         if self.is_following(user):
             self.followed.remove(user)
 
     def is_following(self, user):
+        """Проверка, является ли подписчиком."""
         return self.followed.filter(
             followers.c.followed_id == user.id).count() > 0
 
     def get_reset_token(self):
+        """Получение токкена."""
         auth_s = itsdangerous.Serializer(app.config['SECRET_KEY'])
         return auth_s.dumps({'user_id': self.id})
 
     @staticmethod
     def verify_reset_token(token):
+        """Подтверждение токена из письма,
+        отправленного на почту при смене пароля.
+        """
         auth_s = itsdangerous.Serializer(app.config['SECRET_KEY'])
         try:
             user_id = auth_s.loads(token)['user_id']
@@ -101,6 +112,7 @@ class User(db.Model, UserMixin):
 
 
 class Post(db.Model):
+    """ДМодель отображения всех записей."""
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     created_at = db.Column(
@@ -122,6 +134,7 @@ class Post(db.Model):
 
 
 class Comment(db.Model):
+    """Комментарии к посту."""
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(100), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False,
@@ -134,6 +147,7 @@ class Comment(db.Model):
 
 
 class Like(db.Model):
+    """Лайки к посту."""
     id = db.Column(db.Integer, primary_key=True)
     author = db.Column(db.Integer, db.ForeignKey(
         'user.id', ondelete="CASCADE"), nullable=False)
@@ -142,17 +156,14 @@ class Like(db.Model):
 
 
 class Message(db.Model):
+    """Личные сообщения."""
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(199), nullable=False)
+    text = db.Column(db.String(199), nullable=False)
+    # Кто отправил.
     sender = db.Column(db.Integer, db.ForeignKey(
         'user.id', ondelete="CASCADE"), nullable=False)
+    # Кто получил.
     getter = db.Column(db.Integer, db.ForeignKey(
         'user.id', ondelete="CASCADE"), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False,
                           default=datetime.utcnow)
-    received = db.Column(db.Boolean, default=False, nullable=False)
-
-    def has_received(self):
-        if request.path == url_for('all_messages'):
-            self.received = True
-            return self.received
