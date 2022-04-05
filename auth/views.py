@@ -4,19 +4,21 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
 
-from app import app, bcrypt, db, mail, User
+from app import app, db, mail, User, bcrypt
 from forms import RegistrationForm, LoginForm, RequestResetForm, ResetPassForm
-
+from utils.utils import send_reset_email, make_hashed_password
 
 @app.before_request
-def before_request():
+def get_last_seen_before_request():
+    """Отображение последнего визита пользователя."""
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
 
 
 @app.route('/login', methods=['POST', 'GET'])
-def login():
+def make_login_user():
+    """Авторизация пользователя."""
     form = LoginForm()
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -35,13 +37,13 @@ def login():
 
 
 @app.route("/register", methods=['GET', 'POST'])
-def register():
+def make_register_user():
+    """Авторизация пользователя."""
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(
-            form.password.data).decode('utf-8')
+        hashed_password = make_hashed_password(form)
         user = User(
             username=form.username.data,
             email=form.email.data,
@@ -60,20 +62,11 @@ def logout():
     return redirect(url_for('index'))
 
 
-def send_reset_email(user):
-    token = user.get_reset_token()
-    msg = Message('Смена пароля',
-                  recipients=[user.email])
-    msg.body = f'''
-    Чтобы поменять пароль,перейдите по ссылке:
-    {url_for('reset_token', token=token, _external=True)}
-    Если вы не получали этого сообщения,просто проигнорируйте данное сообщение.
-    '''
-    mail.send(msg)
-
-
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
+    """Страница для отображения формы смены пароля.
+    При валидации данных отправляется письмо на email.
+    """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RequestResetForm()
@@ -89,7 +82,10 @@ def reset_password_request():
 
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
-def reset_token(token):
+def reset_password_process(token):
+    """При получении ссылки при смене пароля, пользователь получает хешированную ссылку,
+     которая будет проверять и при верификации тот может сменить пароль.
+     """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     user = User.verify_reset_token(token)
@@ -98,8 +94,7 @@ def reset_token(token):
         return redirect(url_for('reset_password_request'))
     form = ResetPassForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(
-            form.password.data).decode('utf-8')
+        hashed_password = make_hashed_password(form)
         user.password = hashed_password
         db.session.commit()
         flash('Пароль изменен. Можете войти на сайт', 'success')
@@ -110,5 +105,3 @@ def reset_token(token):
         form=form,
         is_reset=is_reset,
     )
-
-

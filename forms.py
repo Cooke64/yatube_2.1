@@ -2,8 +2,12 @@ from flask_login import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, BooleanField, TextAreaField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, \
-    ValidationError, InputRequired
+from wtforms.validators import (
+    DataRequired, Length,
+    Email, EqualTo,
+    ValidationError,
+    InputRequired
+)
 
 from app import User
 
@@ -43,7 +47,7 @@ class ProfileForm(FlaskForm):
     username = StringField(
         'Имя пользователя', validators=[Length(min=3, max=20)]
     )
-    email = StringField('Email',  validators=[Email()])
+    email = StringField('Email', validators=[Email()])
     picture = FileField(
         'Сменить фотографию профиля',
         validators=[FileAllowed(['jpg', 'png', 'jpeg'])]
@@ -68,7 +72,7 @@ class PostCreateForm(FlaskForm):
         'Заголовок', validators=[DataRequired()]
     )
     text = TextAreaField(
-        'Содержание поста',  validators=[DataRequired()]
+        'Содержание поста', validators=[DataRequired()]
     )
 
 
@@ -103,7 +107,7 @@ class RequestResetForm(FlaskForm):
 
 
 class ResetPassForm(FlaskForm):
-    """Форма для изменения пароля на новый.."""
+    """Форма для изменения пароля на новый."""
     password = PasswordField(
         'Новый пароль', validators=[DataRequired(), Length(min=2, max=20)]
     )
@@ -124,4 +128,3 @@ class SendMessageForm(FlaskForm):
     body = TextAreaField(
         'Отправьте ваше сообщение', validators=[Length(max=199)]
     )
-

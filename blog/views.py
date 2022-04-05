@@ -1,18 +1,24 @@
 from flask import render_template, flash, url_for, redirect, abort, request
 from flask_login import login_required, current_user
-from flask_mail import Message
 
 from app import app, db, mail, Post, Comment, Like, User
-from forms import PostCreateForm, AddCommentForm, EditCommentForm, \
-    ContactUsForm
+from forms import (
+    PostCreateForm, AddCommentForm,
+    EditCommentForm, ContactUsForm
+)
+from utils.utils import send_message
 
 
 @app.route('/')
-def index():
+def get_index_page():
+    """Главная страница сайта. Отображение всех постов."""
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(
         Post.created_at.desc()).paginate(page=page, per_page=3)
-    last_post = Post.query.first()
+    try:
+        last_post = Post.query.all()[-1]
+    except:
+        last_post = None
     users = User.query.all()
     return render_template(
         'blog/index.html',
@@ -23,7 +29,8 @@ def index():
 
 
 @app.route('/search')
-def search():
+def search_query():
+    """Отображение результатов поиска по указанному запросу."""
     page = request.args.get('page', 1, type=int)
     q = request.args.get('q')
     if q:
@@ -38,13 +45,15 @@ def search():
 
 
 @app.route('/about')
-def about():
+def get_about_page():
+    """Страничка о создателе блога."""
     return render_template('blog/about.html', )
 
 
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
-def create():
+def create_new_post():
+    """Создание нового поста в ленту пользователем."""
     form = PostCreateForm()
     if form.validate_on_submit():
         post = Post(
@@ -61,7 +70,8 @@ def create():
 
 @app.route('/post/edit/<post_id>', methods=['GET', 'POST'])
 @login_required
-def post_edit(post_id):
+def post_edit(post_id: int):
+    """Изменение поста."""
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
@@ -69,7 +79,6 @@ def post_edit(post_id):
     if form.validate_on_submit():
         post.title = request.form['title']
         post.text = request.form['text']
-        db.session.commit()
         try:
             db.session.commit()
             return redirect(url_for('post_detail', post_id=post.id))
@@ -78,6 +87,7 @@ def post_edit(post_id):
     elif request.method == 'GET':
         form.title.data = post.title
         form.text.data = post.text
+    # Передается в шаблон для переключения при рендере шаблона создать/изменить пост
     is_edit = True
     return render_template('blog/create.html', is_edit=is_edit, post=post,
                            form=form)
@@ -85,7 +95,7 @@ def post_edit(post_id):
 
 @app.route('/post/delete/<post_id>', methods=['GET', 'POST'])
 @login_required
-def post_delete(post_id):
+def post_delete(post_id: int):
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
@@ -99,7 +109,10 @@ def post_delete(post_id):
 
 
 @app.route("/post/<post_id>", methods=["GET", "POST"])
-def post_detail(post_id):
+def get_post_detail(post_id: int):
+    """Отображение конкретного поста с возможностью добавления комментария и
+    поставить отметку нравится/не нравится.
+    """
     post = Post.query.get_or_404(post_id)
     comments = Comment.query.filter_by(post_id=post_id)
     if current_user.is_authenticated:
@@ -111,13 +124,13 @@ def post_detail(post_id):
     form = AddCommentForm()
     if form.validate_on_submit() and current_user.is_authenticated:
         comment = Comment(
-            body=form.body.data,
+            text=form.text.data,
             post_id=post.id,
             user_id=current_user.id,
         )
         db.session.add(comment)
         db.session.commit()
-        flash("Your comment has been added to the post", "success")
+        flash("Комментарий добавлен.", "success")
         return redirect(url_for("post_detail", post_id=post.id))
     return render_template("blog/post_detail.html", post=post, like=like,
                            form=form, comments=comments)
@@ -136,20 +149,20 @@ def internal_error(error):
 
 @app.route("/comment/<comm_id>/", methods=["GET", "POST"])
 @login_required
-def comment_edit(comm_id):
+def comment_edit(comm_id: int):
     comment = Comment.query.get_or_404(comm_id)
     if comment.author != current_user and not current_user.is_authenticated:
         abort(403)
     form = EditCommentForm()
     if form.validate_on_submit() and request.method == 'GET':
-        comment.body = request.form['body']
+        comment.text = request.form['text']
         try:
             db.session.commit()
             return redirect(url_for('post_detail', post_id=comment.post.id))
         except Exception as error:
             return error
     else:
-        form.body.data = comment.body
+        form.text.data = comment.text
     return render_template('blog/comment_edit.html', form=form)
 
 
@@ -158,29 +171,26 @@ def comment_edit(comm_id):
 def contact_us():
     form = ContactUsForm()
     if form.validate_on_submit():
-        author = current_user.username
-        message = form.message.data
-        msg = Message(f'Отзыв пользователя {author}',
-                      recipients=['pozdeev1994@mail.ru'])
-        msg.body = message
-        mail.send(msg)
-        flash('Сообщение отправлено', 'success')
-        return redirect(url_for('index'))
+        # Если форма валидна, то вызывается функция отправить сообщение
+        send_message(form)
     return render_template('blog/contact_us.html', form=form)
 
 
 @app.route('/like_post/<post_id>', methods=["GET", "POST"])
 @login_required
-def like_post(post_id):
+def like_post(post_id: int):
+    """Поставить/убрать отметку лайк посту."""
     post = Post.query.filter_by(id=post_id)
     like = Like.query.filter_by(
         author=current_user.id, post_id=post_id).first()
     if not post:
         flash('error', 'warning')
     elif like:
+        # Если есть лайк к текущему посту, он удаляется из бд.
         db.session.delete(like)
         db.session.commit()
     else:
+        # Если лайка нет к текущему посту, он добавляется в бд.
         like = Like(author=current_user.id, post_id=post_id)
         db.session.add(like)
         db.session.commit()

@@ -1,4 +1,4 @@
-from keys import *
+from keys import MAIL_DEFAULT_SENDER, MAIL_USERNAME, MAIL_PASSWORD
 
 
 class Config(object):

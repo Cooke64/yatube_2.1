@@ -59,3 +59,4 @@ python manage.py migrate
 
 Запустить проект
 
+Посмотреть сайт [тут](https://yatube2.herokuapp.com)

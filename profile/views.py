@@ -8,7 +8,8 @@ from utils.utils import save_pic
 
 @app.route('/profile_edit', methods=['GET', 'POST'])
 @login_required
-def profile_edit():
+def edit_profile():
+    """Редактирование профиля пользователя."""
     user = User.query.filter_by(username=current_user.username).first_or_404()
     follow = user.followed.count()
     form = ProfileForm()
@@ -41,7 +42,8 @@ def profile_edit():
 
 
 @app.route('/profile/<string:username>')
-def user_profile(username):
+def get_user_profile(username: str):
+    """Отображение страницы профиля пользователя."""
     user = User.query.filter_by(username=username).first_or_404()
     follow = user.followed.count()
     image_file = url_for(
@@ -59,6 +61,7 @@ def user_profile(username):
 @app.route('/profile/change_data', methods=['GET', 'POST'])
 @login_required
 def change_data():
+    """Редактирование профиля пользователя."""
     form = ChangeDataForm()
     if form.validate_on_submit():
         current_user.age = form.age.data
@@ -83,7 +86,8 @@ def change_data():
 
 
 @app.route('/user/<string:username>')
-def user_posts(username):
+def get_user_posts(username: str):
+    """Отображение всех постов пользователя."""
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
     posts = Post.query.filter_by(author=user).order_by(
@@ -95,7 +99,8 @@ def user_posts(username):
 
 
 @app.route('/profile/<string:username>/followers')
-def user_followers(username):
+def get_user_followers(username: str):
+    """Отображение всех подписчиков пользователя."""
     user = User.query.filter_by(username=username).first_or_404()
     return render_template(
         'profile/user_followers.html',
@@ -104,7 +109,8 @@ def user_followers(username):
 
 
 @app.route('/profile/<string:username>/comments')
-def user_comments(username):
+def et_user_comments(username: str):
+    """Отображение всех комментариев пользователя."""
     user = User.query.filter_by(username=username).first_or_404()
     follow = user.followed
     return render_template(
@@ -115,7 +121,8 @@ def user_comments(username):
 
 
 @app.route('/profile/<string:username>/likes')
-def user_likes(username):
+def get_user_likes(username: str):
+    """Отображение всех лайков пользователя."""
     user = User.query.filter_by(username=username).first_or_404()
     return render_template(
         'profile/user_likes.html',
@@ -125,7 +132,8 @@ def user_likes(username):
 
 @app.route('/profile/<string:username>/send_message')
 @login_required
-def send_message(username):
+def send_message(username:str):
+    """Отправление сообщения выбранному пользователю."""
     form = SendMessageForm()
     if form.validate_on_submit():
         message = Message(
@@ -143,6 +151,7 @@ def send_message(username):
 @app.route('/profile/all_messages')
 @login_required
 def all_messages():
+    """Отображение всех сообщений пользователя."""
     user = current_user
     messages_sent = Message.query.filter_by(getter=user).all()
     messages_got = Message.query.filter_by(sender=user).all()
