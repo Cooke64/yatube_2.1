@@ -54,9 +54,12 @@ pip install -r requirements.txt
 Выполнить миграции:
 
 ```
-python manage.py migrate
+flask db init
+flask db migrate
 ```
 
 Запустить проект
-
+```
+flask run
+```
 Посмотреть сайт [тут](https://yatube2.herokuapp.com)
